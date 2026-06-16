@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>巴拿马艾力达 Loma Arriba CRD 日晒瑰夏 | Coffee Profile</title>
+  <title>当季菜单 | Coffee Profile</title>
   <style>
     :root {
       --bg: #fbfaf7;
@@ -13,9 +13,9 @@
       --line: #ddd6cb;
       --moss: #465847;
       --citrus: #d78438;
-      --rose: #c59686;
-      --mist: #f1ece4;
-      --shadow: 0 24px 70px rgba(49, 35, 26, 0.13);
+      --shadow: 0 24px 70px rgba(49, 35, 26, 0.10);
+      --body-font: "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      --display-font: "Avenir Next", "Segoe UI", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
     }
 
     * {
@@ -28,9 +28,10 @@
 
     body {
       margin: 0;
-      background: var(--bg);
+      background:
+        linear-gradient(180deg, #fbfaf7 0%, #f5f0e8 46%, #fbfaf7 100%);
       color: var(--ink);
-      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+      font-family: var(--body-font);
       line-height: 1.58;
     }
 
@@ -44,34 +45,588 @@
     }
 
     .page {
+      position: relative;
       min-height: 100vh;
+    }
+
+    .page::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(70, 88, 71, 0.035), transparent 18%, transparent 82%, rgba(215, 132, 56, 0.035));
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.42), transparent 76%);
     }
 
     .site-header {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 14px;
       width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 28px 0 18px;
-      border-bottom: 1px solid rgba(36, 26, 21, 0.12);
+      padding: 30px 0 24px;
+      border-bottom: 1px solid rgba(36, 26, 21, 0.07);
+    }
+
+    .menu-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
     }
 
     .brand {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 30px;
-      letter-spacing: 0;
+      font-family: var(--display-font);
+      font-size: clamp(32px, 4vw, 46px);
+      font-weight: 500;
+      letter-spacing: 0.03em;
       color: var(--moss);
     }
 
-    .nav {
-      display: flex;
-      gap: 28px;
+    .menu-subtitle {
+      margin: 0;
       color: var(--muted);
-      font-size: 13px;
-      letter-spacing: 0.08em;
+      font-size: 12px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
+    }
+
+    .menu-panel {
+      width: 100%;
+      padding: 18px 0 4px;
+    }
+
+    .menu-control {
+      min-width: 0;
+    }
+
+    .menu-control label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--moss);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .bean-select {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .bean-card-rail {
+      position: relative;
+      display: flex;
+      gap: clamp(26px, 5vw, 76px);
+      align-items: center;
+      min-height: 390px;
+      padding: 12px 8px 24px;
+      perspective: 1200px;
+    }
+
+    .deck-stack {
+      position: relative;
+      width: 190px;
+      height: 306px;
+      flex: 0 0 190px;
+      justify-self: center;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 180ms ease;
+    }
+
+    .deck-stack:hover {
+      transform: translateY(-5px) rotate(-1deg);
+    }
+
+    .deck-stack:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(70, 88, 71, 0.16);
+    }
+
+    .deck-stack::before,
+    .deck-stack::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(130, 89, 45, 0.18), transparent 28%),
+        linear-gradient(135deg, #d9b47c, #f2d9a9 42%, #c58e55);
+      box-shadow: 0 20px 38px rgba(52, 35, 20, 0.14);
+    }
+
+    .deck-stack::before {
+      transform: translate(10px, 10px) rotate(4deg);
+      opacity: .62;
+    }
+
+    .deck-stack::after {
+      transform: translate(5px, 5px) rotate(2deg);
+      opacity: .76;
+    }
+
+    .deck-card-top {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .drawn-card-wrap {
+      display: grid;
+      justify-items: start;
+      align-items: center;
+      flex: 1 1 auto;
+      min-height: 340px;
+    }
+
+    .deck-draw-card {
+      position: absolute;
+      left: 38px;
+      top: 44px;
+      width: 190px;
+      height: 306px;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .bean-card-rail.is-drawing .deck-draw-card {
+      animation: draw-card 1700ms cubic-bezier(.18, .78, .18, 1) forwards;
+    }
+
+    .bean-card-rail.is-drawing .deck-draw-card .tarot-inner {
+      animation: draw-flip 1700ms cubic-bezier(.2, .72, .16, 1) forwards;
+    }
+
+    .bean-card-rail.is-collecting .drawn-result {
+      animation: collect-card 1150ms cubic-bezier(.28, .72, .18, 1) forwards;
+      transform-origin: center;
+    }
+
+    .bean-card-rail.is-collecting .drawn-result .tarot-inner {
+      animation: collect-flip 1150ms cubic-bezier(.28, .72, .18, 1) forwards;
+    }
+
+    @keyframes draw-card {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(-6deg) scale(.96);
+      }
+      26% {
+        opacity: 1;
+        transform: translate(44px, -8px) rotate(-3deg) scale(.98);
+      }
+      62% {
+        opacity: 1;
+        transform: translate(180px, -24px) rotate(3deg) scale(1.06);
+      }
+      88% {
+        opacity: 1;
+        transform: translate(248px, -24px) rotate(1deg) scale(1.16);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(248px, -24px) rotate(1deg) scale(1.16);
+      }
+    }
+
+    @keyframes draw-flip {
+      0%,
+      50% {
+        transform: rotateY(0deg);
+      }
+      82%,
+      100% {
+        transform: rotateY(180deg);
+      }
+    }
+
+    @keyframes collect-card {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+      }
+      34% {
+        opacity: 1;
+        transform: translate(-70px, -10px) rotate(-2deg) scale(.99);
+      }
+      78% {
+        opacity: 1;
+        transform: translate(-210px, 6px) rotate(-5deg) scale(.96);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-248px, 4px) rotate(-6deg) scale(.94);
+      }
+    }
+
+    @keyframes collect-flip {
+      0% {
+        transform: rotateY(180deg);
+      }
+      42% {
+        transform: rotateY(180deg);
+      }
+      100% {
+        transform: rotateY(0deg);
+      }
+    }
+
+    .bean-card {
+      position: relative;
+      width: 190px;
+      height: 306px;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: inherit;
+      font-family: var(--body-font);
+      cursor: default;
+      scroll-snap-align: start;
+      transform-style: preserve-3d;
+    }
+
+    .drawn-card-wrap .bean-card {
+      width: 220px;
+      height: 354px;
+    }
+
+    .drawn-result {
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    .reset-draw {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: color-mix(in srgb, var(--active-accent, var(--moss)) 18%, #ffffff);
+      color: var(--moss);
+      font: 700 13px var(--body-font);
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(49, 35, 26, 0.075);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .reset-draw:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(49, 35, 26, 0.11);
+    }
+
+    .reset-draw:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(70, 88, 71, 0.15);
+    }
+
+    .bean-card:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(70, 88, 71, 0.16);
+    }
+
+    .tarot-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 620ms cubic-bezier(.2, .7, .2, 1), filter 220ms ease;
+    }
+
+    .bean-card.is-active .tarot-inner,
+    .bean-card.is-flipping .tarot-inner {
+      transform: rotateY(180deg);
+    }
+
+    .tarot-side {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      backface-visibility: hidden;
+      box-shadow: 0 24px 44px rgba(52, 35, 20, 0.18);
+    }
+
+    .bean-card-rail .deck-draw-card {
+      position: absolute;
+      inset: auto;
+      left: 38px;
+      top: 44px;
+      width: 190px;
+      height: 306px;
+    }
+
+    .tarot-back {
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(130, 89, 45, 0.18), transparent 28%),
+        linear-gradient(135deg, #d9b47c, #f2d9a9 42%, #c58e55);
+      color: rgba(80, 49, 27, 0.72);
+    }
+
+    .tarot-back::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(86, 52, 28, 0.32);
+      border-radius: 9px;
+      box-shadow: inset 0 0 0 4px rgba(255, 244, 217, 0.23);
+    }
+
+    .tarot-back::after {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 1px solid rgba(86, 52, 28, 0.18);
+      border-radius: 7px;
+    }
+
+    .tarot-eye {
+      position: relative;
+      width: 76px;
+      height: 42px;
+      margin-bottom: 18px;
+      border: 2px solid rgba(78, 48, 27, 0.46);
+      border-radius: 50%;
+      transform: rotate(-2deg);
+    }
+
+    .tarot-eye::before {
+      content: "";
+      position: absolute;
+      inset: 11px 27px;
+      border-radius: 999px;
+      background: rgba(78, 48, 27, 0.42);
+      box-shadow: 0 0 0 7px rgba(255, 243, 214, 0.36);
+    }
+
+    .tarot-moon {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      box-shadow: -8px 0 0 rgba(78, 48, 27, 0.38);
+      transform: rotate(-18deg);
+    }
+
+    .tarot-star {
+      position: absolute;
+      top: 26px;
+      width: 18px;
+      height: 18px;
+      color: rgba(78, 48, 27, 0.38);
+    }
+
+    .tarot-star::before,
+    .tarot-star::after {
+      content: "";
+      position: absolute;
+      inset: 8px 0;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .tarot-star::after {
+      transform: rotate(90deg);
+    }
+
+    .tarot-face {
+      padding: 13px 13px 11px;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 18%, #f8fbff), #fffaf0 46%, color-mix(in srgb, var(--card-accent) 16%, #f5efe0));
+      transform: rotateY(180deg);
+      color: #221916;
+    }
+
+    .tarot-art {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 176px;
+      border-radius: 9px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.18)),
+        color-mix(in srgb, var(--card-accent) 18%, #edf6ff);
+      overflow: hidden;
+    }
+
+    .tarot-sun {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      width: 38px;
+      height: 38px;
+      margin-left: -19px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--card-accent) 62%, #ffe08a);
+      box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.28);
+    }
+
+    .tarot-cup {
+      position: absolute;
+      left: 50%;
+      top: 62px;
+      width: 58px;
+      height: 64px;
+      margin-left: -29px;
+      border-radius: 8px 8px 24px 24px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.35), transparent 35%),
+        linear-gradient(180deg, #f2c45d, #bf7d35);
+      box-shadow: 0 10px 0 -5px rgba(111, 73, 33, 0.5);
+    }
+
+    .tarot-cup::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      top: 64px;
+      width: 10px;
+      height: 42px;
+      background: #9a6531;
+      box-shadow: -22px 42px 0 5px rgba(154, 101, 49, 0.58), 22px 42px 0 5px rgba(154, 101, 49, 0.58);
+    }
+
+    .tarot-stream {
+      position: absolute;
+      top: 42px;
+      width: 2px;
+      height: 110px;
+      background: color-mix(in srgb, var(--card-accent) 62%, #5aa7d5);
+      opacity: .72;
+      border-radius: 999px;
+    }
+
+    .tarot-stream:nth-child(1) { left: 34px; }
+    .tarot-stream:nth-child(2) { right: 34px; }
+    .tarot-stream:nth-child(3) { left: 50%; height: 90px; opacity: .48; }
+
+    .tarot-title {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.25;
+    }
+
+    .tarot-meta {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .tarot-flavors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 9px;
+    }
+
+    .tarot-flavors span {
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.65);
+      color: color-mix(in srgb, var(--card-accent) 55%, #2c211d);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .bean-card-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .bean-card-meta {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .bean-card-flavors {
+      display: flex;
+      gap: 5px;
+      margin-top: 14px;
+    }
+
+    .bean-card-flavors i {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--card-accent);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.58);
+    }
+
+    .menu-current {
+      min-width: 260px;
+      padding: 15px 17px;
+      border-radius: 8px;
+      background:
+        linear-gradient(140deg, color-mix(in srgb, var(--active-accent, var(--moss)) 30%, #ffffff), rgba(255, 255, 255, 0.78));
+      box-shadow: 0 16px 34px rgba(49, 35, 26, 0.075);
+      text-align: left;
+    }
+
+    .current-label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--moss);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .menu-current strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .menu-current span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .menu-flavors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .menu-flavors span {
+      display: inline-flex;
+      margin: 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--moss);
+      font-size: 11px;
+      line-height: 1.2;
     }
 
     .hero {
@@ -81,12 +636,15 @@
       align-items: center;
       width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 64px 0 72px;
+      padding: 58px 0 76px;
     }
 
-    .back-link {
+    .profile-label {
       display: inline-flex;
+      padding: 7px 10px;
       margin-bottom: 44px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.56);
       color: var(--moss);
       font-size: 13px;
       letter-spacing: 0.08em;
@@ -98,15 +656,16 @@
     h2,
     h3 {
       margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: var(--display-font);
       font-weight: 500;
-      line-height: 1.03;
-      letter-spacing: 0;
+      line-height: 1.08;
+      letter-spacing: 0.01em;
     }
 
     h1 {
       max-width: 690px;
-      font-size: clamp(48px, 7.4vw, 92px);
+      font-size: clamp(46px, 7vw, 88px);
+      font-weight: 520;
     }
 
     .hero-subtitle {
@@ -119,7 +678,7 @@
       max-width: 560px;
       margin: 32px 0 0;
       padding-top: 28px;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid rgba(221, 214, 203, 0.58);
       color: #3d342d;
       font-size: 17px;
     }
@@ -133,10 +692,11 @@
 
     .flavor-list span {
       padding: 8px 13px;
-      border: 1px solid rgba(70, 88, 71, 0.22);
-      background: rgba(255, 255, 255, 0.54);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
       color: var(--moss);
       font-size: 14px;
+      box-shadow: 0 8px 22px rgba(49, 35, 26, 0.055);
     }
 
     .hero-meta {
@@ -146,14 +706,27 @@
       max-width: 640px;
       margin-top: 34px;
       padding-top: 26px;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid rgba(221, 214, 203, 0.58);
     }
 
     .meta-card {
+      position: relative;
+      overflow: hidden;
       min-height: 98px;
       padding: 18px;
-      background: rgba(255, 255, 255, 0.64);
-      border: 1px solid rgba(70, 88, 71, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: 0 14px 30px rgba(49, 35, 26, 0.055);
+    }
+
+    .meta-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(70, 88, 71, 0.65), rgba(215, 132, 56, 0.42), transparent);
     }
 
     .label {
@@ -190,6 +763,8 @@
     }
 
     .coffee-bag {
+      position: relative;
+      overflow: hidden;
       width: min(470px, 82%);
       min-height: 560px;
       margin-left: auto;
@@ -197,16 +772,35 @@
       background:
         linear-gradient(100deg, rgba(255,255,255,0.52), rgba(255,255,255,0) 34%),
         linear-gradient(150deg, #f4efe7, #fffdfa 44%, #e4dbcf);
-      border: 1px solid rgba(85, 74, 65, 0.18);
-      border-radius: 22px 22px 10px 10px;
-      box-shadow: 0 36px 80px rgba(36, 26, 21, 0.20);
+      border: 0;
+      border-radius: 8px;
+      box-shadow: 0 34px 76px rgba(36, 26, 21, 0.16);
+    }
+
+    .coffee-bag::before {
+      content: "";
+      position: absolute;
+      top: 28px;
+      left: 18%;
+      right: 18%;
+      height: 1px;
+      background: rgba(36, 26, 21, 0.16);
+    }
+
+    .coffee-bag::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(36, 26, 21, 0.05), transparent 22%, transparent 78%, rgba(36, 26, 21, 0.045));
     }
 
     .bag-logo {
       margin-bottom: 66px;
       color: var(--moss);
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: var(--display-font);
       font-size: 42px;
+      font-weight: 500;
       text-align: center;
       letter-spacing: 0.08em;
     }
@@ -216,15 +810,18 @@
       padding: 32px 26px;
       width: min(275px, 100%);
       background: rgba(255, 255, 255, 0.60);
-      border: 1px solid rgba(36, 26, 21, 0.18);
+      border-radius: 8px;
       text-align: center;
+      box-shadow:
+        inset 0 0 0 8px rgba(255, 255, 255, 0.22),
+        0 18px 40px rgba(36, 26, 21, 0.08);
     }
 
     .bag-label strong {
       display: block;
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: var(--display-font);
       font-size: 25px;
-      font-weight: 500;
+      font-weight: 520;
       line-height: 1.15;
     }
 
@@ -238,19 +835,30 @@
     }
 
     .section {
+      position: relative;
       width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 56px 0;
-      border-top: 1px solid rgba(36, 26, 21, 0.18);
+      padding: 62px 0;
+      border-top: 1px solid rgba(36, 26, 21, 0.08);
     }
 
     .section h2 {
+      display: flex;
+      align-items: center;
+      gap: 16px;
       margin-bottom: 34px;
       font-size: clamp(30px, 4vw, 48px);
+      font-weight: 520;
+    }
+
+    .section h2::after {
+      content: "";
+      flex: 1 1 auto;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(70, 88, 71, 0.18), transparent);
     }
 
     .origin-grid,
-    .process-grid,
     .brew-grid {
       display: grid;
       grid-template-columns: 0.9fr 1.1fr;
@@ -258,18 +866,37 @@
       align-items: start;
     }
 
+    .roaster-card {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 52px;
+      align-items: center;
+    }
+
     .facts {
       display: grid;
-      gap: 18px;
       margin: 0;
+      padding: 18px 22px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.54);
+      box-shadow: 0 18px 42px rgba(49, 35, 26, 0.055);
     }
 
     .fact-row {
       display: grid;
       grid-template-columns: 190px minmax(0, 1fr);
       gap: 24px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(36, 26, 21, 0.10);
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(36, 26, 21, 0.07);
+    }
+
+    .fact-row:first-child {
+      padding-top: 0;
+    }
+
+    .fact-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
     }
 
     .fact-row dt {
@@ -288,10 +915,9 @@
 
     .media-card {
       overflow: hidden;
-      border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--paper);
-      box-shadow: var(--shadow);
+      box-shadow: 0 24px 54px rgba(49, 35, 26, 0.10);
     }
 
     .media-card img {
@@ -302,6 +928,7 @@
 
     .media-caption {
       padding: 18px 20px 20px;
+      background: rgba(255, 255, 255, 0.84);
       color: var(--muted);
       font-size: 14px;
     }
@@ -312,35 +939,36 @@
       font-size: 16px;
     }
 
-    .highlight {
-      padding: 24px;
-      border-left: 3px solid var(--citrus);
-      background: rgba(255, 255, 255, 0.56);
-      color: #3d342d;
-    }
-
-    .roaster-card {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 52px;
-      align-items: center;
-    }
-
     .dripper-card {
       margin-top: 24px;
     }
 
     .brew-methods {
       display: grid;
-      gap: 16px;
+      gap: 0;
+      padding: 16px 18px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.54);
+      box-shadow: 0 18px 42px rgba(49, 35, 26, 0.055);
     }
 
     .method {
       display: flex;
       align-items: center;
       gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(36, 26, 21, 0.07);
       color: #3d342d;
       font-size: 16px;
+    }
+
+    .method:first-child {
+      padding-top: 0;
+    }
+
+    .method:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
     }
 
     .method svg {
@@ -352,19 +980,24 @@
 
     .parameter-table {
       width: 100%;
-      border-collapse: collapse;
-      background: rgba(255, 255, 255, 0.52);
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 18px 42px rgba(49, 35, 26, 0.075);
     }
 
     .parameter-table th,
     .parameter-table td {
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(36, 26, 21, 0.12);
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(36, 26, 21, 0.07);
       text-align: left;
       vertical-align: top;
     }
 
     .parameter-table th {
+      background: rgba(70, 88, 71, 0.08);
       color: var(--moss);
       font-size: 12px;
       letter-spacing: 0.13em;
@@ -373,6 +1006,7 @@
 
     .parameter-table td:first-child {
       width: 42%;
+      background: rgba(255, 255, 255, 0.40);
       color: var(--moss);
       font-size: 12px;
       font-weight: 700;
@@ -382,6 +1016,9 @@
 
     .note {
       margin-top: 28px;
+      padding: 18px 20px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.58);
       color: var(--muted);
       font-size: 14px;
     }
@@ -390,7 +1027,7 @@
       width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
       padding: 32px 0 46px;
-      border-top: 1px solid rgba(36, 26, 21, 0.18);
+      border-top: 1px solid rgba(36, 26, 21, 0.08);
       color: var(--muted);
       font-size: 13px;
     }
@@ -401,13 +1038,8 @@
     }
 
     @media (max-width: 920px) {
-      .nav {
-        display: none;
-      }
-
       .hero,
       .origin-grid,
-      .process-grid,
       .brew-grid,
       .roaster-card {
         grid-template-columns: 1fr;
@@ -418,7 +1050,7 @@
         padding-top: 42px;
       }
 
-      .back-link {
+      .profile-label {
         margin-bottom: 28px;
       }
 
@@ -459,6 +1091,80 @@
         font-size: 25px;
       }
 
+      .menu-heading {
+        align-items: start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .menu-panel {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .bean-card-rail {
+        flex-direction: column;
+        gap: 34px;
+        min-height: auto;
+      }
+
+      .drawn-card-wrap {
+        justify-items: center;
+        width: 100%;
+      }
+
+      .bean-card-rail .deck-draw-card {
+        left: calc(50% - 95px);
+        top: 12px;
+      }
+
+      @keyframes draw-card {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) rotate(-4deg) scale(.96);
+        }
+        26% {
+          opacity: 1;
+          transform: translate(0, 42px) rotate(-2deg) scale(.98);
+        }
+        62% {
+          opacity: 1;
+          transform: translate(0, 178px) rotate(4deg) scale(1);
+        }
+        92% {
+          opacity: 1;
+          transform: translate(0, 260px) rotate(1deg) scale(1.02);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(0, 260px) rotate(1deg) scale(1.02);
+        }
+      }
+
+      @keyframes collect-card {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) rotate(0deg) scale(1);
+        }
+        34% {
+          opacity: 1;
+          transform: translate(0, -64px) rotate(-2deg) scale(.99);
+        }
+        78% {
+          opacity: 1;
+          transform: translate(0, -220px) rotate(-5deg) scale(.96);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(0, -260px) rotate(-6deg) scale(.94);
+        }
+      }
+
+      .menu-current {
+        min-width: 0;
+      }
+
       h1 {
         font-size: clamp(40px, 14vw, 64px);
       }
@@ -491,100 +1197,63 @@
 <body>
   <main class="page">
     <header class="site-header" aria-label="页面导航">
-      <div class="brand">NAIZUI</div>
-      <nav class="nav" aria-label="主导航">
-        <a href="#green">Green Bean</a>
-        <a href="#roaster">Roaster</a>
-        <a href="#brew">Brewing</a>
-      </nav>
+      <div class="menu-heading">
+        <div class="brand">当季菜单</div>
+        <p class="menu-subtitle">Seasonal Coffee Menu</p>
+      </div>
+      <div class="menu-panel" aria-label="当季豆单切换">
+        <div class="menu-control">
+          <label for="beanSelect">抽取当季咖啡</label>
+          <select class="bean-select" id="beanSelect" data-list="beanOptions"></select>
+          <div class="bean-card-rail" data-list="beanCards" aria-label="当季咖啡豆卡片切换"></div>
+        </div>
+      </div>
     </header>
 
     <section class="hero">
       <div>
-        <a class="back-link" href="#green">Panama Gesha Profile</a>
-        <h1>Elida Estate Loma Arriba CRD Natural Gesha</h1>
-        <p class="hero-subtitle">巴拿马 · 艾力达庄园 · Loma Arriba · 冷房干燥日晒瑰夏</p>
-        <p class="intro">一支来自艾力达 Loma Arriba 地块的 CRD 日晒瑰夏。2026 产季表现亮眼，香气比往年更精致细腻，花香、桃感和香槟般的酸质都很突出。</p>
-        <div class="flavor-list" aria-label="风味描述">
-          <span>玉兰花</span>
-          <span>香槟</span>
-          <span>水蜜桃</span>
-          <span>新奇士橙</span>
-        </div>
+        <span class="profile-label" data-field="profileLabel"></span>
+        <h1 data-field="name"></h1>
+        <p class="hero-subtitle" data-field="subtitle"></p>
+        <p class="intro" data-field="intro"></p>
+        <div class="flavor-list" data-list="flavors" aria-label="风味描述"></div>
         <div class="hero-meta" aria-label="咖啡概览">
           <div class="meta-card">
             <span class="label">Origin</span>
-            <span class="value">Boquete, Panama</span>
+            <span class="value" data-field="metaOrigin"></span>
           </div>
           <div class="meta-card">
             <span class="label">Process</span>
-            <span class="value">CRD 冷房干燥日晒</span>
+            <span class="value" data-field="metaProcess"></span>
           </div>
           <div class="meta-card">
             <span class="label">Roaster</span>
-            <span class="value">奶嘴</span>
+            <span class="value" data-field="roasterName"></span>
           </div>
         </div>
       </div>
 
-      <div class="hero-visual" aria-label="咖啡包装与艾力达庄园视觉">
+      <div class="hero-visual" aria-label="咖啡包装与庄园视觉">
         <div class="coffee-bag">
           <div class="bag-logo">NAIZUI</div>
           <div class="bag-label">
-            <strong>Elida Estate<br>Loma Arriba</strong>
-            <span>CRD Natural Gesha</span>
-            <span>Panama · 2026 Crop</span>
-            <span>Magnolia · Champagne · Peach</span>
+            <strong data-field="bagTitle"></strong>
+            <span data-field="bagProcess"></span>
+            <span data-field="bagOrigin"></span>
+            <span data-field="bagFlavor"></span>
           </div>
         </div>
-        <img class="farm-photo" src="https://www.proudmarycoffee.com.au/cdn/shop/products/43759590_1478780888892362_3406003743987073024_o.jpg?v=1589448530" alt="艾力达庄园所在的巴拿马高地咖啡景观">
+        <img class="farm-photo" data-field="heroImage" alt="">
       </div>
     </section>
 
     <section class="section" id="green">
       <h2>生豆信息</h2>
       <div class="origin-grid">
-        <dl class="facts">
-          <div class="fact-row">
-            <dt>国家</dt>
-            <dd>巴拿马 Panama</dd>
-          </div>
-          <div class="fact-row">
-            <dt>产区</dt>
-            <dd>Chiriquí, Boquete, Volcán Barú 周边高地</dd>
-          </div>
-          <div class="fact-row">
-            <dt>庄园</dt>
-            <dd>Elida Estate 艾力达庄园，Lamastus Family Estates 旗下代表性庄园</dd>
-          </div>
-          <div class="fact-row">
-            <dt>地块</dt>
-            <dd>Loma Arriba</dd>
-          </div>
-          <div class="fact-row">
-            <dt>海拔</dt>
-            <dd>常见资料约 1,700 - 1,950 masl</dd>
-          </div>
-          <div class="fact-row">
-            <dt>品种</dt>
-            <dd>Gesha / Geisha 瑰夏</dd>
-          </div>
-          <div class="fact-row">
-            <dt>采摘</dt>
-            <dd>4 月 4 日采摘，35 天冷房缓慢干燥</dd>
-          </div>
-          <div class="fact-row">
-            <dt>风味</dt>
-            <dd>玉兰花、香槟、水蜜桃、新奇士橙</dd>
-          </div>
-          <div class="fact-row">
-            <dt>产季表现</dt>
-            <dd>2026 产季为艾力达大年，大货品质极佳</dd>
-          </div>
-        </dl>
+        <dl class="facts" data-list="greenFacts"></dl>
         <div class="media-card">
-          <img src="https://images.unsplash.com/photo-1515442261605-65987783cb6a?auto=format&fit=crop&w=1200&q=85" alt="巴拿马高地咖啡樱桃与咖啡树">
-          <div class="media-caption">艾力达庄园由 Lamastus 家族经营，靠近 Volcán Barú 国家公园。高海拔、火山土、低温夜晚和云雾森林环境，让咖啡樱桃成熟更慢，也带来更清晰的花香和甜感。CRD 冷房干燥日晒降低了厚重发酵感，让玉兰花、水蜜桃和新奇士橙的层次更干净。</div>
+          <img data-field="greenImage" alt="">
+          <div class="media-caption" data-field="greenNote"></div>
         </div>
       </div>
     </section>
@@ -594,52 +1263,25 @@
       <div class="roaster-card">
         <div>
           <span class="label">Roaster Profile</span>
-          <p class="split-copy">本支咖啡由「奶嘴」烘焙。烘焙表达以滤泡清晰度为核心，保留 CRD 日晒瑰夏的花香、香槟感酸质与水蜜桃甜感。</p>
-          <dl class="facts">
-            <div class="fact-row">
-              <dt>烘焙商</dt>
-              <dd>奶嘴</dd>
-            </div>
-            <div class="fact-row">
-              <dt>建议方向</dt>
-              <dd>滤泡取向，突出花香、柑橘酸质与干净甜感</dd>
-            </div>
-            <div class="fact-row">
-              <dt>品饮窗口</dt>
-              <dd>可根据实际烘焙日期补充</dd>
-            </div>
-          </dl>
+          <p class="split-copy" data-field="roasterNote"></p>
+          <dl class="facts" data-list="roasterFacts"></dl>
         </div>
         <div class="media-card">
-          <img src="https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?auto=format&fit=crop&w=900&q=85" alt="咖啡烘焙机中的咖啡豆">
-          <div class="media-caption">烘焙记录可后续补充批次号、烘焙日期与建议养豆天数。</div>
+          <img data-field="roasterImage" alt="">
+          <div class="media-caption" data-field="roasterCaption"></div>
         </div>
       </div>
     </section>
 
     <section class="section" id="brew">
-      <h2>萃取方式与参数</h2>
+      <h2>萃取</h2>
       <div class="brew-grid">
         <div>
           <span class="label">Recommended Brewer</span>
-          <div class="brew-methods" aria-label="推荐萃取方式">
-            <div class="method">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 4h10l-1.3 7.8a4.6 4.6 0 0 1-9.1 0L7 4Z"/><path d="M6 21h12"/><path d="M12 16v5"/><path d="M16.5 7h2a2 2 0 0 1 0 4h-2.4"/></svg>
-              <span>Suprima SD-1R 滤杯</span>
-            </div>
-            <div class="method">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6h12"/><path d="M8 6l2 13h4l2-13"/><path d="M9 11h6"/><path d="M10 15h4"/></svg>
-              <span>Ditting 807LS · 9.5 格</span>
-            </div>
-            <div class="method">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 18c3-6 5.5-9 8-9s5 3 8 9"/><path d="M8 18c1.5-3 2.8-4.5 4-4.5s2.5 1.5 4 4"/><path d="M12 4v4"/></svg>
-              <span>13g 粉 / 200g 水 / 92°C</span>
-            </div>
-          </div>
-
+          <div class="brew-methods" data-list="brewHighlights" aria-label="推荐萃取方式"></div>
           <div class="media-card dripper-card">
-            <img src="https://www.slowpoursupply.co/cdn/shop/files/Suprima_Instruments_SD-1R-11_1800x1800.jpg?v=1761716891" alt="Suprima SD-1R 透明滤杯与配套尺">
-            <div class="media-caption">SD-1R 流速较快，适合用稳定水位和轻绕注水保留花香、桃感与干净尾韵。</div>
+            <img data-field="brewImage" alt="">
+            <div class="media-caption" data-field="brewCaption"></div>
           </div>
         </div>
 
@@ -651,53 +1293,393 @@
                 <th>Recommended</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>水温</td>
-                <td>92°C</td>
-              </tr>
-              <tr>
-                <td>滤杯</td>
-                <td>Suprima SD-1R</td>
-              </tr>
-              <tr>
-                <td>研磨</td>
-                <td>Ditting 807LS · 9.5 格</td>
-              </tr>
-              <tr>
-                <td>粉量</td>
-                <td>13 g</td>
-              </tr>
-              <tr>
-                <td>注水量</td>
-                <td>200 g</td>
-              </tr>
-              <tr>
-                <td>粉水比</td>
-                <td>1 : 15.4</td>
-              </tr>
-              <tr>
-                <td>水质</td>
-                <td>调配水 40-50 ppm</td>
-              </tr>
-              <tr>
-                <td>风味目标</td>
-                <td>玉兰花香展开，桃子甜感在中段变圆，尾段保留新奇士橙和香槟般的轻盈酸质。</td>
-              </tr>
-            </tbody>
+            <tbody data-list="brewTable"></tbody>
           </table>
-          <p class="note">若香气闷或甜感偏厚，可略粗研磨或加快尾段流速；若酸质锐利、桃感不足，可略细研磨或延长前段浸润时间。</p>
+          <p class="note" data-field="brewNote"></p>
         </div>
       </div>
     </section>
 
     <footer class="footer">
-      Static coffee profile page · 图片与庄园资料参考：
-      <a href="https://archerscoffee.com/products/panama-elida-estate-geisha-plano-2801">Archers Coffee</a>,
-      <a href="https://www.proudmarycoffee.com.au/products/panama-lamastus-family-estates-elida-green-tip-geisha-washed-filter-100g">Proud Mary Coffee</a>,
-      <a href="https://www.slowpoursupply.co/products/suprima-instruments-sd-1">Slow Pour Supply</a>,
-      <a href="https://www.foodandwine.com/panama-coffee-travel-11951870">Food &amp; Wine</a>.
+      Static coffee profile page · Bean ID:
+      <span data-field="beanId"></span>
     </footer>
   </main>
+
+  <script>
+    const beans = {
+      "elida-crd": {
+        profileLabel: "Panama Gesha Profile",
+        name: "Elida Estate Loma Arriba CRD Natural Gesha",
+        subtitle: "巴拿马 · 艾力达庄园 · Loma Arriba · 冷房干燥日晒瑰夏",
+        intro: "一支来自艾力达 Loma Arriba 地块的 CRD 日晒瑰夏。2026 产季表现亮眼，香气比往年更精致细腻，花香、桃感和香槟般的酸质都很突出。",
+        flavors: ["玉兰花", "香槟", "水蜜桃", "新奇士橙"],
+        metaOrigin: "Boquete, Panama",
+        metaProcess: "CRD 冷房干燥日晒",
+        roasterName: "奶嘴",
+        bagTitle: "Elida Estate<br>Loma Arriba",
+        bagProcess: "CRD Natural Gesha",
+        bagOrigin: "Panama · 2026 Crop",
+        bagFlavor: "Magnolia · Champagne · Peach",
+        heroImage: "https://www.proudmarycoffee.com.au/cdn/shop/products/43759590_1478780888892362_3406003743987073024_o.jpg?v=1589448530",
+        heroAlt: "艾力达庄园所在的巴拿马高地咖啡景观",
+        greenImage: "https://images.unsplash.com/photo-1515442261605-65987783cb6a?auto=format&fit=crop&w=1200&q=85",
+        greenAlt: "咖啡樱桃与咖啡树",
+        greenNote: "艾力达庄园由 Lamastus 家族经营，靠近 Volcán Barú 国家公园。CRD 冷房干燥日晒降低了厚重发酵感，让玉兰花、水蜜桃和新奇士橙的层次更干净。",
+        greenFacts: [
+          ["国家", "巴拿马 Panama"],
+          ["产区", "Chiriquí, Boquete, Volcán Barú 周边高地"],
+          ["庄园", "Elida Estate 艾力达庄园"],
+          ["地块", "Loma Arriba"],
+          ["海拔", "常见资料约 1,700 - 1,950 masl"],
+          ["品种", "Gesha / Geisha 瑰夏"],
+          ["处理法", "CRD · Cold Room Drying 冷房干燥日晒"],
+          ["采摘", "4 月 4 日采摘，35 天冷房缓慢干燥"],
+          ["产季表现", "2026 产季为艾力达大年，大货品质极佳"]
+        ],
+        roasterNote: "本支咖啡由「奶嘴」烘焙。烘焙表达以滤泡清晰度为核心，保留 CRD 日晒瑰夏的花香、香槟感酸质与水蜜桃甜感。",
+        roasterImage: "https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?auto=format&fit=crop&w=900&q=85",
+        roasterAlt: "咖啡烘焙机中的咖啡豆",
+        roasterCaption: "烘焙记录可后续补充批次号、烘焙日期与建议养豆天数。",
+        roasterFacts: [
+          ["烘焙商", "奶嘴"],
+          ["建议方向", "滤泡取向，突出花香、柑橘酸质与干净甜感"],
+          ["品饮窗口", "可根据实际烘焙日期补充"]
+        ],
+        brewImage: "https://www.slowpoursupply.co/cdn/shop/files/Suprima_Instruments_SD-1R-11_1800x1800.jpg?v=1761716891",
+        brewAlt: "Suprima SD-1R 透明滤杯与配套尺",
+        brewCaption: "SD-1R 流速较快，适合用稳定水位和轻绕注水保留花香、桃感与干净尾韵。",
+        brewHighlights: ["Suprima SD-1R 滤杯", "Ditting 807LS · 9.5 格", "13g 粉 / 200g 水 / 92°C"],
+        brewTable: [
+          ["水温", "92°C"],
+          ["滤杯", "Suprima SD-1R"],
+          ["研磨", "Ditting 807LS · 9.5 格"],
+          ["粉量", "13 g"],
+          ["注水量", "200 g"],
+          ["粉水比", "1 : 15.4"],
+          ["水质", "调配水 40-50 ppm"],
+          ["风味目标", "玉兰花香展开，桃子甜感在中段变圆，尾段保留新奇士橙和香槟般的轻盈酸质。"]
+        ],
+        brewNote: "若香气闷或甜感偏厚，可略粗研磨或加快尾段流速；若酸质锐利、桃感不足，可略细研磨或延长前段浸润时间。"
+      },
+      "kenya-aa": {
+        profileLabel: "Kenya Filter Profile",
+        name: "Kenya Nyeri AA Washed",
+        subtitle: "肯尼亚 · Nyeri · AA · 水洗",
+        intro: "一支高酸质、黑加仑和莓果感明显的肯尼亚水洗。适合做成明亮、干净、尾段带茶感的日常手冲。",
+        flavors: ["黑加仑", "覆盆子", "葡萄柚", "红茶"],
+        metaOrigin: "Nyeri, Kenya",
+        metaProcess: "Washed 水洗",
+        roasterName: "奶嘴",
+        bagTitle: "Kenya<br>Nyeri AA",
+        bagProcess: "Washed",
+        bagOrigin: "Kenya · Filter",
+        bagFlavor: "Blackcurrant · Grapefruit · Tea",
+        heroImage: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=85",
+        heroAlt: "咖啡豆近景",
+        greenImage: "https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?auto=format&fit=crop&w=1200&q=85",
+        greenAlt: "咖啡与产区风景",
+        greenNote: "Nyeri 是肯尼亚精品咖啡的重要产区之一，高海拔与火山土壤常带来鲜明酸质、莓果感和干净尾韵。",
+        greenFacts: [
+          ["国家", "肯尼亚 Kenya"],
+          ["产区", "Nyeri"],
+          ["等级", "AA"],
+          ["品种", "SL28 / SL34 等常见肯尼亚品种"],
+          ["处理法", "Washed 水洗"],
+          ["风味", "黑加仑、覆盆子、葡萄柚、红茶"]
+        ],
+        roasterNote: "本支咖啡由「奶嘴」烘焙。烘焙方向以明亮酸质和干净度为主，避免尾段涩感过重。",
+        roasterImage: "https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?auto=format&fit=crop&w=900&q=85",
+        roasterAlt: "咖啡烘焙机中的咖啡豆",
+        roasterCaption: "可根据实际批次补充烘焙日期、养豆建议和杯测记录。",
+        roasterFacts: [
+          ["烘焙商", "奶嘴"],
+          ["建议方向", "突出莓果酸质与红茶尾韵"],
+          ["品饮窗口", "可根据实际烘焙日期补充"]
+        ],
+        brewImage: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?auto=format&fit=crop&w=1000&q=85",
+        brewAlt: "手冲咖啡器具",
+        brewCaption: "肯尼亚水洗适合用略高水温和稳定萃取，打开莓果酸质与茶感。",
+        brewHighlights: ["V60 / Origami", "中细研磨", "15g 粉 / 250g 水 / 93°C"],
+        brewTable: [
+          ["水温", "93°C"],
+          ["滤杯", "V60 / Origami"],
+          ["研磨", "中细研磨"],
+          ["粉量", "15 g"],
+          ["注水量", "250 g"],
+          ["粉水比", "1 : 16.7"],
+          ["水质", "调配水 50-70 ppm"],
+          ["风味目标", "黑加仑酸质清楚，中段有莓果甜感，尾段像红茶。"]
+        ],
+        brewNote: "若酸质过尖，可略粗研磨或降低水温；若香气不足，可略细研磨并延长闷蒸。"
+      },
+      "ethiopia-natural": {
+        profileLabel: "Ethiopia Natural Profile",
+        name: "Ethiopia Guji Natural",
+        subtitle: "埃塞俄比亚 · Guji · 日晒",
+        intro: "一支甜感柔和、花果香明显的埃塞日晒。杯中以莓果、热带水果和轻盈花香为主，适合轻松明亮的滤泡表达。",
+        flavors: ["蓝莓", "草莓", "佛手柑", "蜂蜜"],
+        metaOrigin: "Guji, Ethiopia",
+        metaProcess: "Natural 日晒",
+        roasterName: "奶嘴",
+        bagTitle: "Ethiopia<br>Guji",
+        bagProcess: "Natural",
+        bagOrigin: "Ethiopia · Filter",
+        bagFlavor: "Blueberry · Bergamot · Honey",
+        heroImage: "https://images.unsplash.com/photo-1459755486867-b55449bb39ff?auto=format&fit=crop&w=1200&q=85",
+        heroAlt: "咖啡杯与咖啡豆",
+        greenImage: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85",
+        greenAlt: "咖啡与滤泡场景",
+        greenNote: "Guji 产区常见明亮花果香和柔和甜感。日晒处理让莓果、蜂蜜和热带水果调性更容易被感知。",
+        greenFacts: [
+          ["国家", "埃塞俄比亚 Ethiopia"],
+          ["产区", "Guji"],
+          ["品种", "Heirloom"],
+          ["处理法", "Natural 日晒"],
+          ["风味", "蓝莓、草莓、佛手柑、蜂蜜"]
+        ],
+        roasterNote: "本支咖啡由「奶嘴」烘焙。烘焙方向以甜感和香气舒展为主，减少日晒尾段的沉闷感。",
+        roasterImage: "https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?auto=format&fit=crop&w=900&q=85",
+        roasterAlt: "咖啡烘焙机中的咖啡豆",
+        roasterCaption: "可根据实际批次补充烘焙日期、养豆建议和杯测记录。",
+        roasterFacts: [
+          ["烘焙商", "奶嘴"],
+          ["建议方向", "突出莓果、花香与蜂蜜甜感"],
+          ["品饮窗口", "可根据实际烘焙日期补充"]
+        ],
+        brewImage: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=85",
+        brewAlt: "手冲咖啡萃取",
+        brewCaption: "埃塞日晒适合用稳定注水控制尾段，保留甜感并避免过度浸出。",
+        brewHighlights: ["V60 / Kono", "中等研磨", "15g 粉 / 240g 水 / 92°C"],
+        brewTable: [
+          ["水温", "92°C"],
+          ["滤杯", "V60 / Kono"],
+          ["研磨", "中等研磨"],
+          ["粉量", "15 g"],
+          ["注水量", "240 g"],
+          ["粉水比", "1 : 16"],
+          ["水质", "调配水 40-60 ppm"],
+          ["风味目标", "莓果香气清楚，蜂蜜甜感集中，尾段干净。"]
+        ],
+        brewNote: "若尾段有发酵沉闷感，可略粗研磨并减少后段扰动；若甜感不足，可稍微拉长总萃取。"
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedBean = params.get("bean");
+    let beanId = beans[requestedBean] ? requestedBean : "elida-crd";
+    let bean = beans[beanId];
+    let hasDrawnCard = false;
+    let isAnimatingCard = false;
+    const accentPalette = ["#d99558", "#7f9f77", "#d77f70", "#7b9fb8", "#b895cc", "#c8a24b"];
+
+    function getBeanAccent(id) {
+      const keys = Object.keys(beans);
+      const index = Math.max(keys.indexOf(id), 0);
+      return accentPalette[index % accentPalette.length];
+    }
+
+    function setText(selector, value) {
+      const node = document.querySelector(selector);
+      if (node) node.textContent = value || "";
+    }
+
+    function setHTML(selector, value) {
+      const node = document.querySelector(selector);
+      if (node) node.innerHTML = value || "";
+    }
+
+    function setImage(selector, src, alt) {
+      const node = document.querySelector(selector);
+      if (!node) return;
+      node.src = src || "";
+      node.alt = alt || "";
+    }
+
+    function renderFacts(selector, rows) {
+      const node = document.querySelector(selector);
+      if (!node) return;
+      node.innerHTML = rows.map(([label, value]) => `
+        <div class="fact-row">
+          <dt>${label}</dt>
+          <dd>${value}</dd>
+        </div>
+      `).join("");
+    }
+
+    function renderFlavors() {
+      const node = document.querySelector('[data-list="flavors"]');
+      node.innerHTML = bean.flavors.map((flavor) => `<span>${flavor}</span>`).join("");
+    }
+
+    function renderMenuFlavors() {
+      const node = document.querySelector('[data-list="menuFlavors"]');
+      if (!node) return;
+      node.innerHTML = bean.flavors.slice(0, 4).map((flavor) => `<span>${flavor}</span>`).join("");
+    }
+
+    function renderBrewHighlights() {
+      const node = document.querySelector('[data-list="brewHighlights"]');
+      const icons = [
+        '<path d="M7 4h10l-1.3 7.8a4.6 4.6 0 0 1-9.1 0L7 4Z"/><path d="M6 21h12"/><path d="M12 16v5"/><path d="M16.5 7h2a2 2 0 0 1 0 4h-2.4"/>',
+        '<path d="M6 6h12"/><path d="M8 6l2 13h4l2-13"/><path d="M9 11h6"/><path d="M10 15h4"/>',
+        '<path d="M4 18c3-6 5.5-9 8-9s5 3 8 9"/><path d="M8 18c1.5-3 2.8-4.5 4-4.5s2.5 1.5 4 4"/><path d="M12 4v4"/>'
+      ];
+      node.innerHTML = bean.brewHighlights.map((item, index) => `
+        <div class="method">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">${icons[index % icons.length]}</svg>
+          <span>${item}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderBrewTable() {
+      const node = document.querySelector('[data-list="brewTable"]');
+      node.innerHTML = bean.brewTable.map(([label, value]) => `
+        <tr>
+          <td>${label}</td>
+          <td>${value}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderBeanOptions() {
+      const basePath = window.location.pathname;
+      const select = document.querySelector('[data-list="beanOptions"]');
+      const cards = document.querySelector('[data-list="beanCards"]');
+
+      if (select) {
+        select.innerHTML = Object.entries(beans).map(([id, item]) => `
+          <option value="${id}" ${id === beanId ? "selected" : ""}>${item.name} / ${item.metaOrigin} / ${item.metaProcess}</option>
+        `).join("");
+        select.addEventListener("change", (event) => {
+          window.location.href = `${basePath}?bean=${event.target.value}`;
+        });
+      }
+
+      if (cards) {
+        cards.classList.remove("is-drawing", "is-collecting");
+        const beanEntries = Object.entries(beans);
+        const currentIndex = Math.max(beanEntries.findIndex(([id]) => id === beanId), 0);
+        const nextId = beanEntries[(currentIndex + 1) % beanEntries.length][0];
+        const nextBean = beans[nextId];
+        const accent = getBeanAccent(beanId);
+        const nextAccent = getBeanAccent(nextId);
+        const flavorTags = bean.flavors.slice(0, 3).map((flavor) => `<span>${flavor}</span>`).join("");
+        const nextFlavorTags = nextBean.flavors.slice(0, 3).map((flavor) => `<span>${flavor}</span>`).join("");
+        const tarotBack = `
+          <span class="tarot-star"></span>
+          <span class="tarot-eye"></span>
+          <span class="tarot-moon"></span>
+        `;
+        function tarotFaceFor(item, tags) {
+          return `
+          <span class="tarot-inner">
+            <span class="tarot-side tarot-back" aria-hidden="true">${tarotBack}</span>
+            <span class="tarot-side tarot-face">
+              <span class="tarot-art" aria-hidden="true">
+                <span class="tarot-stream"></span>
+                <span class="tarot-stream"></span>
+                <span class="tarot-stream"></span>
+                <span class="tarot-sun"></span>
+                <span class="tarot-cup"></span>
+              </span>
+              <span class="tarot-title">${item.name}</span>
+              <span class="tarot-meta">${item.metaOrigin} · ${item.metaProcess}</span>
+              <span class="tarot-flavors">${tags}</span>
+            </span>
+          </span>
+          `;
+        }
+
+        cards.innerHTML = `
+          <button class="deck-stack" type="button" data-next-bean="${nextId}" aria-label="从卡组抽取下一张咖啡牌">
+            <span class="deck-card-top tarot-side tarot-back" aria-hidden="true">${tarotBack}</span>
+          </button>
+          <span class="deck-draw-card bean-card" style="--card-accent: ${nextAccent}" aria-hidden="true">
+            ${tarotFaceFor(nextBean, nextFlavorTags)}
+          </span>
+          <div class="drawn-card-wrap ${hasDrawnCard ? "" : "is-empty"}">
+            ${hasDrawnCard ? `
+              <div class="drawn-result">
+                <div class="bean-card is-active" style="--card-accent: ${accent}" aria-label="${bean.name}">
+                  ${tarotFaceFor(bean, flavorTags)}
+                </div>
+                <button class="reset-draw" type="button" data-reset-draw>重新抽卡</button>
+              </div>
+            ` : ""}
+          </div>
+        `;
+
+        cards.onclick = (event) => {
+          const reset = event.target.closest("[data-reset-draw]");
+          if (reset) {
+            if (!hasDrawnCard || isAnimatingCard) return;
+            isAnimatingCard = true;
+            cards.classList.add("is-collecting");
+            setTimeout(() => {
+              hasDrawnCard = false;
+              isAnimatingCard = false;
+              cards.classList.remove("is-collecting");
+              renderPage();
+            }, 1150);
+            return;
+          }
+
+          const deck = event.target.closest("[data-next-bean]");
+          if (!deck) return;
+          if (hasDrawnCard || isAnimatingCard || cards.classList.contains("is-drawing")) return;
+          isAnimatingCard = true;
+          cards.classList.add("is-drawing");
+          setTimeout(() => {
+            beanId = deck.dataset.nextBean;
+            bean = beans[beanId];
+            hasDrawnCard = true;
+            isAnimatingCard = false;
+            cards.classList.remove("is-drawing");
+            window.history.pushState({}, "", `${basePath}?bean=${beanId}`);
+            renderPage();
+          }, 1700);
+        };
+      }
+    }
+
+    function renderPage() {
+      document.title = `${bean.name} | 当季菜单`;
+      document.documentElement.style.setProperty("--active-accent", getBeanAccent(beanId));
+      setText('[data-field="menuCurrentName"]', bean.name);
+      setText('[data-field="menuCurrentMeta"]', `${bean.metaOrigin} · ${bean.metaProcess}`);
+      setText('[data-field="profileLabel"]', bean.profileLabel);
+      setText('[data-field="name"]', bean.name);
+      setText('[data-field="subtitle"]', bean.subtitle);
+      setText('[data-field="intro"]', bean.intro);
+      setText('[data-field="metaOrigin"]', bean.metaOrigin);
+      setText('[data-field="metaProcess"]', bean.metaProcess);
+      setText('[data-field="roasterName"]', bean.roasterName);
+      setHTML('[data-field="bagTitle"]', bean.bagTitle);
+      setText('[data-field="bagProcess"]', bean.bagProcess);
+      setText('[data-field="bagOrigin"]', bean.bagOrigin);
+      setText('[data-field="bagFlavor"]', bean.bagFlavor);
+      setImage('[data-field="heroImage"]', bean.heroImage, bean.heroAlt);
+      setImage('[data-field="greenImage"]', bean.greenImage, bean.greenAlt);
+      setText('[data-field="greenNote"]', bean.greenNote);
+      setText('[data-field="roasterNote"]', bean.roasterNote);
+      setImage('[data-field="roasterImage"]', bean.roasterImage, bean.roasterAlt);
+      setText('[data-field="roasterCaption"]', bean.roasterCaption);
+      setImage('[data-field="brewImage"]', bean.brewImage, bean.brewAlt);
+      setText('[data-field="brewCaption"]', bean.brewCaption);
+      setText('[data-field="brewNote"]', bean.brewNote);
+      setText('[data-field="beanId"]', beanId);
+      renderFlavors();
+      renderMenuFlavors();
+      renderFacts('[data-list="greenFacts"]', bean.greenFacts);
+      renderFacts('[data-list="roasterFacts"]', bean.roasterFacts);
+      renderBrewHighlights();
+      renderBrewTable();
+      renderBeanOptions();
+    }
+
+    renderPage();
+  </script>
 </body>
 </html>
